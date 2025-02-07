@@ -1,0 +1,8 @@
+---
+- name: Update web servers
+  hosts: homelab
+  vars_files:
+    - ../vars/secrets.yaml
+  tasks:
+    - name: Test connection
+      ping:
