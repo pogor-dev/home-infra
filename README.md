@@ -13,6 +13,12 @@ Home infrastructure as a code
 ansible-inventory -i inventory/hosts.yaml --list
 ```
 
+### Encrypt secrets
+
+```sh
+ansible-vault encrypt_string --vault-password-file vars/vault_password.txt "password" --name 'key'
+```
+
 ### Running playbooks in check mode
 
 ```sh
