@@ -1,0 +1,19 @@
+---
+galaxy_info:
+  author: your_name
+  description: Role to install and configure Web Console (Cockpit) on AlmaLinux, RHEL, and Rocky Linux
+  license: MIT
+  min_ansible_version: 2.17
+  platforms:
+    - name: AlmaLinux
+      versions:
+        - 8
+        - 9
+    - name: RedHat
+      versions:
+        - 8
+        - 9
+    - name: Rocky
+      versions:
+        - 8
+        - 9

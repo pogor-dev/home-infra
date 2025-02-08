@@ -1,0 +1,7 @@
+---
+- name: Check network connectivity to example.com
+  ansible.builtin.uri:
+    url: http://example.com
+    return_content: no
+  register: result
+  failed_when: result.status != 200

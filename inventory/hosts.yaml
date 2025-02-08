@@ -1,0 +1,9 @@
+homelab:
+  hosts:
+    lenovo:
+      ansible_host: "{{ lenovo_host }}"
+      ansible_connection: ssh
+      ansible_user: "{{ lenovo_username }}"
+      ansible_ssh_pass: "{{ lenovo_password }}"
+      ansible_become_password: "{{ lenovo_password }}"
+      ansible_python_interpreter: /usr/bin/python3.9

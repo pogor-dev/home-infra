@@ -1,0 +1,26 @@
+---
+- name: Install Cockpit
+  become: yes
+  ansible.builtin.yum:
+    name: cockpit
+    state: present
+
+- name: Enable and start Cockpit service
+  become: yes
+  ansible.builtin.systemd:
+    name: cockpit
+    enabled: yes
+    state: started
+
+- name: Install cockpit-pcp
+  become: yes
+  ansible.builtin.yum:
+    name: cockpit-pcp
+    state: present
+
+- name: Enable and start pmlogger service
+  become: yes
+  ansible.builtin.systemd:
+    name: pmlogger
+    enabled: yes
+    state: started

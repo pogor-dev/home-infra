@@ -1,0 +1,8 @@
+---
+- name: Update web servers
+  hosts: homelab
+  vars_files:
+    - ../vars/secrets.yaml
+  roles:
+    - network_check
+    - cockpit
