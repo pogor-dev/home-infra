@@ -5,9 +5,8 @@ Home infrastructure as a code
 
 1. Install `sshpass` on local machine
 2. Install `NetworkManager-wifi` on remote machine if WiFi support is needed
-3. [Fix the SUDO permission](https://access.redhat.com/solutions/6217761)
-  `Defaults noexec`
-  `chmod 4755 /usr/bin/sudo`
+3. [Fix the SUDO permission](https://access.redhat.com/solutions/6217761) by running `chmod 4755 /usr/bin/sudo`
+4. Remove `Defaults noexec` and `Defaults requiretty` from `sudo visudo`.
 
 ## Commands
 

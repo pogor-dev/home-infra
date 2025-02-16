@@ -1,0 +1,29 @@
+- name: Configure firewalld for Cloudflare-only access
+  hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: Fetch Cloudflare IPs
+      ansible.builtin.uri:
+        url: https://api.cloudflare.com/client/v4/ips
+        return_content: yes
+      register: cloudflare_ips
+
+    - name: Ensure Cloudflare IPs fetched successfully
+      ansible.builtin.assert:
+        that:
+          - cloudflare_ips.status == 200
+          - cloudflare_ips.json.success == true
+
+    - name: Store Cloudflare IPs in YAML file
+      ansible.builtin.copy:
+        content: |
+            cloudflare_ipv4_cidrs:
+            {% for ip in cloudflare_ips.json.result.ipv4_cidrs %}
+              - {{ ip }}
+            {% endfor %}
+            cloudflare_ipv6_cidrs:
+            {% for ip in cloudflare_ips.json.result.ipv6_cidrs %}
+              - {{ ip }}
+            {% endfor %}
+        dest: vars/cloudflare.yaml
+        mode: '0644'
