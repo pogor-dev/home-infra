@@ -1,0 +1,78 @@
+---
+- name: Install firewalld
+  become: true
+  ansible.builtin.yum:
+    name: firewalld
+    state: present
+
+- name: Enable and start firewalld service
+  become: true
+  ansible.builtin.systemd:
+    name: firewalld
+    enabled: true
+    state: started
+
+- name: Create Cloudflare zone
+  become: true
+  ansible.posix.firewalld:
+    zone: "{{ cloudflare_zone_name}}"
+    state: present
+    permanent: true
+
+- name: Reload firewalld after creating Cloudflare zone
+  become: true
+  ansible.builtin.command: firewall-cmd --reload
+
+- name: Set Cloudflare zone as default
+  become: true
+  ansible.builtin.command: firewall-cmd --set-default-zone=cloudflare
+
+- name: Assign Cloudflare zone to network interface
+  become: true
+  ansible.posix.firewalld:
+    zone: "{{ cloudflare_zone_name}}"
+    interface: "{{ network_interface }}"
+    state: enabled
+    permanent: true
+
+- name: Add Cloudflare and internal IP ranges to Cloudflare zone
+  become: true
+  ansible.posix.firewalld:
+    zone: "{{ cloudflare_zone_name }}"
+    rich_rule: "{{ item }}"
+    state: enabled
+    permanent: true
+  loop: >
+    {{
+      (
+        cloudflare_ipv4_cidrs | map('regex_replace', '^(.*)$', 'rule family="ipv4" source address="\1" accept') | list +
+        cloudflare_ipv6_cidrs | map('regex_replace', '^(.*)$', 'rule family="ipv6" source address="\1" accept') | list +
+        internal_ipv4_cidrs | map('regex_replace', '^(.*)$', 'rule family="ipv4" source address="\1" accept') | list +
+        whitelisted_ipv4_cidrs | map('regex_replace', '^(.*)$', 'rule family="ipv4" destination address="\1" accept') | list
+      )
+    }}
+
+- name: Set default target of Cloudflare zone to DROP
+  become: true
+  ansible.posix.firewalld:
+    zone: "{{ cloudflare_zone_name}}"
+    target: DROP
+    state: enabled
+    permanent: true
+
+- name: Whitelist outgoing services
+  become: true
+  ansible.posix.firewalld:
+    zone: "{{ cloudflare_zone_name }}"
+    service: "{{ item }}"
+    state: enabled
+    permanent: true
+  loop: "{{ whitelisted_services }}"
+
+- name: Block all outgoing requests
+  become: true
+  ansible.posix.firewalld:
+    zone: "{{ cloudflare_zone_name }}"
+    rich_rule: 'rule family="ipv4" destination address="0.0.0.0/0" reject'
+    state: enabled
+    permanent: true

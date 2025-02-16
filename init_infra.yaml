@@ -1,8 +1,10 @@
 ---
-- name: Update web servers
+- name: Init infrastructure
   hosts: homelab
   vars_files:
     - ../vars/secrets.yaml
+    - ../vars/cloudflare.yaml
   roles:
     - network_check
     - cockpit
+    - firewalld

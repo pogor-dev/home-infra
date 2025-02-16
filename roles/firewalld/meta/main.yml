@@ -1,0 +1,9 @@
+---
+galaxy_info:
+  author: Victor Pogor
+  description: Configure firewalld to manage network traffic rules
+  company: pogor.dev
+  license: MIT
+  min_ansible_version: 2.9
+
+dependencies: []
